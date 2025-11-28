@@ -205,3 +205,15 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# Portfolio configuration (contains sensitive financial data)
+portfolio_config.py
+
+# Generated CSV reports
+portfolio_summary_*.csv
+portfolio_holdings_*.csv
+simulation_results_*.csv
+risk_metrics_*.csv
+
+# Generated visualizations
+portfolio_monte_carlo_analysis.png
