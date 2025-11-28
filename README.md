@@ -26,7 +26,7 @@ The script will run 10,000 simulations and generate:
 - `portfolio_monte_carlo_analysis.png` with 4-panel visualization
 - CSV files with detailed results
 
-### Interactive Dashboard (New!)
+### Interactive Dashboard
 
 ```bash
 streamlit run dashboard.py
@@ -128,10 +128,11 @@ No ticker-specific data is stored—only general market behavior patterns.
 
 - Correlation estimates are approximations based on asset classes
 - No transaction costs or taxes modeled
-- No additional contributions during simulation period (can be added)
+- Contributions are optional but don't account for contribution limits (401k/IRA caps)
 - Parameters (returns, volatility) held constant over time
 - Extreme events beyond normal distribution not captured (fat tails)
 - Historical returns don't guarantee future performance
+- No modeling of dividend payments or reinvestment timing
 
 ## Configuration Options
 
@@ -213,6 +214,4 @@ ENABLE_REBALANCING = True
 ```
 
 ---
-
-**Disclaimer:** For educational purposes only. Not financial advice. Consult a qualified professional before making investment decisions.
 
