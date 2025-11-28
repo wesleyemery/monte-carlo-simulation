@@ -129,6 +129,12 @@ RISK_FREE_RATE = 0.04  # 4% risk-free rate (10-year Treasury)
 ENABLE_REBALANCING = False  # Set True to rebalance quarterly
 REBALANCE_FREQUENCY = 63  # Trading days (quarterly)
 
+# Contribution parameters
+ENABLE_CONTRIBUTIONS = False  # Set True to add monthly contributions
+MONTHLY_CONTRIBUTION = 0  # Dollar amount added each month
+CONTRIBUTION_GROWTH_RATE = 0.03  # 3% annual increase (raises/inflation)
+CONTRIBUTION_FREQUENCY = 21  # Trading days (approximately monthly)
+
 # ============================================================================
 # ANALYSIS CODE
 # ============================================================================
@@ -187,6 +193,8 @@ def run_monte_carlo_simulation(portfolio, portfolio_metrics, num_sims, years):
     all_paths = []  # Store full paths for drawdown analysis
 
     print(f"Running {num_sims:,} simulations with correlated returns...")
+    if ENABLE_CONTRIBUTIONS:
+        print(f"  Including monthly contributions: ${MONTHLY_CONTRIBUTION:,.2f} with {CONTRIBUTION_GROWTH_RATE*100:.1f}% annual growth")
 
     for sim in range(num_sims):
         if sim % 1000 == 0:
@@ -195,6 +203,9 @@ def run_monte_carlo_simulation(portfolio, portfolio_metrics, num_sims, years):
         # Track individual asset values for rebalancing
         asset_values = weights * initial_value
         path = [initial_value]
+
+        # Track current contribution amount (grows over time)
+        current_contribution = MONTHLY_CONTRIBUTION
 
         for day in range(num_days):
             # Generate independent standard normal returns
@@ -209,6 +220,16 @@ def run_monte_carlo_simulation(portfolio, portfolio_metrics, num_sims, years):
 
             # Update asset values using geometric returns
             asset_values *= np.exp(daily_returns)
+
+            # Add monthly contributions
+            if ENABLE_CONTRIBUTIONS and day > 0 and day % CONTRIBUTION_FREQUENCY == 0:
+                # Distribute contribution according to portfolio weights
+                contribution_per_asset = weights * current_contribution
+                asset_values += contribution_per_asset
+
+            # Annual contribution growth (raises/inflation)
+            if ENABLE_CONTRIBUTIONS and day > 0 and day % TRADING_DAYS_PER_YEAR == 0:
+                current_contribution *= (1 + CONTRIBUTION_GROWTH_RATE)
 
             # Rebalancing logic
             if ENABLE_REBALANCING and day > 0 and day % REBALANCE_FREQUENCY == 0:

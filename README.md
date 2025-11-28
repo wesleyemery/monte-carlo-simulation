@@ -5,10 +5,17 @@ Python-based Monte Carlo simulation for investment portfolio analysis and 10-yea
 ## Requirements
 
 ```bash
-pip install numpy pandas matplotlib seaborn
+pip install -r requirements.txt
+```
+
+Or manually:
+```bash
+pip install numpy pandas matplotlib seaborn streamlit
 ```
 
 ## Quick Start
+
+### Command Line (Traditional)
 
 ```bash
 python monte_carlo_portfolio_analysis.py
@@ -17,6 +24,19 @@ python monte_carlo_portfolio_analysis.py
 The script will run 10,000 simulations and generate:
 - Console output with statistics
 - `portfolio_monte_carlo_analysis.png` with 4-panel visualization
+- CSV files with detailed results
+
+### Interactive Dashboard (New!)
+
+```bash
+streamlit run dashboard.py
+```
+
+Opens an interactive web dashboard where you can:
+- Adjust simulation parameters with sliders
+- Enable/disable monthly contributions in real-time
+- Visualize results instantly with interactive charts
+- Compare different scenarios side-by-side
 
 ## Portfolio Configuration
 
@@ -115,7 +135,7 @@ No ticker-specific data is stored—only general market behavior patterns.
 
 ## Configuration Options
 
-Edit these parameters at the top of the script:
+Edit these parameters at the top of `monte_carlo_portfolio_analysis.py`:
 
 ```python
 NUM_SIMULATIONS = 10000          # More = better precision (slower)
@@ -123,7 +143,14 @@ TIME_HORIZON_YEARS = 10          # Projection period
 RISK_FREE_RATE = 0.04            # Used in Sharpe ratio calculation
 ENABLE_REBALANCING = False       # Set True for quarterly rebalancing
 REBALANCE_FREQUENCY = 63         # Trading days between rebalances
+
+# Monthly contributions (new!)
+ENABLE_CONTRIBUTIONS = False     # Set True to add monthly contributions
+MONTHLY_CONTRIBUTION = 1000      # Dollar amount added each month
+CONTRIBUTION_GROWTH_RATE = 0.03  # 3% annual increase (raises/inflation)
 ```
+
+**Dashboard:** All parameters can be adjusted via sliders—no code editing required!
 
 ### Enable Rebalancing
 
@@ -139,6 +166,53 @@ Edit `ASSET_CLASS_CORRELATIONS` dictionary to adjust how different asset classes
 
 The correlation matrix is built automatically from your portfolio's asset classes—no hardcoded ticker lists!
 
+## Dashboard Features
+
+The Streamlit dashboard (`dashboard.py`) provides:
+
+### Interactive Controls
+- **Simulation parameters**: Number of simulations, time horizon, risk-free rate
+- **Monthly contributions**: Enable/disable, set amount, configure annual growth
+- **Rebalancing**: Toggle quarterly rebalancing on/off
+
+### Visualizations
+1. **Distribution Tab**: Histogram of final values with percentile table
+2. **Projections Tab**: Sample paths with median and percentile bands
+3. **Risk Analysis Tab**: Probability metrics and drawdown distribution
+4. **Portfolio Tab**: Current allocation breakdown and pie chart
+
+### Real-Time Updates
+- Adjust sliders → click "Run Simulation" → see results instantly
+- Progress bar shows simulation status
+- All metrics update dynamically
+
+## Example Use Cases
+
+### Retirement Planning
+```python
+# In monte_carlo_portfolio_analysis.py
+TIME_HORIZON_YEARS = 30
+ENABLE_CONTRIBUTIONS = True
+MONTHLY_CONTRIBUTION = 1500
+CONTRIBUTION_GROWTH_RATE = 0.03  # Annual raises
+```
+
+### Aggressive Accumulation
+```python
+TIME_HORIZON_YEARS = 10
+ENABLE_CONTRIBUTIONS = True
+MONTHLY_CONTRIBUTION = 3000
+ENABLE_REBALANCING = True  # Maintain target allocation
+```
+
+### Inheritance/Windfall (No Contributions)
+```python
+ENABLE_CONTRIBUTIONS = False  # Just let it grow
+TIME_HORIZON_YEARS = 20
+ENABLE_REBALANCING = True
+```
+
 ---
 
 **Disclaimer:** For educational purposes only. Not financial advice. Consult a qualified professional before making investment decisions.
+
